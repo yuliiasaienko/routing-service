@@ -16,12 +16,7 @@ class RoutingServiceTest {
 
     @Test
     void findsRouteBetweenCzechiaAndItaly() throws IOException {
-        RoutingService service = new RoutingService(
-                new ObjectMapper(),
-                new DefaultResourceLoader(),
-                "classpath:countries.json"
-        );
-        service.loadCountries();
+        RoutingService service = createService();
 
         List<String> route = service.findRoute("CZE", "ITA");
 
@@ -32,13 +27,23 @@ class RoutingServiceTest {
 
     @Test
     void throwsWhenNoLandRouteExists() throws IOException {
-        RoutingService service = new RoutingService(
+        RoutingService service = createService();
+
+        assertThrows(RouteNotFoundException.class, () -> service.findRoute("AUS", "USA"));
+    }
+
+    private RoutingService createService() throws IOException {
+        CountryGraphProvider graphProvider = new CountryGraphProvider(
                 new ObjectMapper(),
                 new DefaultResourceLoader(),
                 "classpath:countries.json"
         );
-        service.loadCountries();
+        graphProvider.loadCountries();
 
-        assertThrows(RouteNotFoundException.class, () -> service.findRoute("AUS", "USA"));
+        return new RoutingService(
+                graphProvider,
+                new CountryCodeValidator(),
+                new RoutePathFinder()
+        );
     }
 }
