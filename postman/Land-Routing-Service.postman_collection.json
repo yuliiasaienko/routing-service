@@ -1,0 +1,72 @@
+{
+  "info": {
+    "name": "Land Routing Service",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Tests for Spring Boot land routing endpoint"
+  },
+  "item": [
+    {
+      "name": "Route CZE to ITA",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/routing/CZE/ITA",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "routing",
+            "CZE",
+            "ITA"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "No route AUS to USA (400)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/routing/AUS/USA",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "routing",
+            "AUS",
+            "USA"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Unknown code XXX to ITA (400)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/routing/XXX/ITA",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "routing",
+            "XXX",
+            "ITA"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    }
+  ]
+}
