@@ -9,13 +9,17 @@ Spring Boot service that calculates a possible land route between two countries 
 
 ## Data Source
 
-The project uses the provided country dataset and ships it as:
-
-- `src/main/resources/countries.json`
-
-Original source:
+By default, the service loads country data directly from the task URL at startup:
 
 - https://raw.githubusercontent.com/mledoze/countries/master/countries.json
+
+This is configurable through:
+
+- `routing.countries.source-url`
+
+Example override (for local/offline testing):
+
+- `routing.countries.source-url=classpath:countries.json`
 
 ## Build
 

@@ -3,6 +3,7 @@ package com.example.routing.service;
 import com.example.routing.exception.RouteNotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
+import org.springframework.core.io.DefaultResourceLoader;
 
 import java.io.IOException;
 import java.util.List;
@@ -15,7 +16,11 @@ class RoutingServiceTest {
 
     @Test
     void findsRouteBetweenCzechiaAndItaly() throws IOException {
-        RoutingService service = new RoutingService(new ObjectMapper());
+        RoutingService service = new RoutingService(
+                new ObjectMapper(),
+                new DefaultResourceLoader(),
+                "classpath:countries.json"
+        );
         service.loadCountries();
 
         List<String> route = service.findRoute("CZE", "ITA");
@@ -27,7 +32,11 @@ class RoutingServiceTest {
 
     @Test
     void throwsWhenNoLandRouteExists() throws IOException {
-        RoutingService service = new RoutingService(new ObjectMapper());
+        RoutingService service = new RoutingService(
+                new ObjectMapper(),
+                new DefaultResourceLoader(),
+                "classpath:countries.json"
+        );
         service.loadCountries();
 
         assertThrows(RouteNotFoundException.class, () -> service.findRoute("AUS", "USA"));

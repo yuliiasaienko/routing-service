@@ -4,7 +4,9 @@ import com.example.routing.exception.RouteNotFoundException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -23,16 +25,28 @@ import java.util.Set;
 @Service
 public class RoutingService {
 
+    static final String DEFAULT_COUNTRIES_SOURCE_URL =
+            "https://raw.githubusercontent.com/mledoze/countries/master/countries.json";
+
     private final ObjectMapper objectMapper;
+    private final ResourceLoader resourceLoader;
+    private final String countriesSourceUrl;
     private final Map<String, List<String>> borderGraph = new HashMap<>();
 
-    public RoutingService(ObjectMapper objectMapper) {
+    public RoutingService(
+            ObjectMapper objectMapper,
+            ResourceLoader resourceLoader,
+            @Value("${routing.countries.source-url:" + DEFAULT_COUNTRIES_SOURCE_URL + "}") String countriesSourceUrl
+    ) {
         this.objectMapper = objectMapper;
+        this.resourceLoader = resourceLoader;
+        this.countriesSourceUrl = countriesSourceUrl;
     }
 
     @PostConstruct
     void loadCountries() throws IOException {
-        ClassPathResource resource = new ClassPathResource("countries.json");
+        borderGraph.clear();
+        Resource resource = resourceLoader.getResource(countriesSourceUrl);
         try (InputStream inputStream = resource.getInputStream()) {
             JsonNode countries = objectMapper.readTree(inputStream);
             for (JsonNode country : countries) {
